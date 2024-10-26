@@ -1,4 +1,4 @@
-# Boring NixOS Modules
+# [Boring NixOS Modules](https://boringnix.store) 
 _Sane NixOS configuration defaults for different services._
 
 This is a collection of modules a NixOS user / system administrator might want to use. They should be almost working out of the box, but still be configurable to the user's needs. Go to [boringnix.store](https://boringnix.store) to download any module.
