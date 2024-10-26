@@ -2,13 +2,185 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BoringNix Templates</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boring NixOS Modules</title>
+    <style>
+        :root {
+            --primary-color: #7eb8da;
+            --secondary-color: #2d3436;
+            --background-color: #f5f6fa;
+            --text-color: #2d3436;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: .5rem;
+        }
+
+        .description {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #636e72;
+        }
+
+        form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #dfe6e9;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6ba4c5;
+        }
+
+        .content {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .github-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            form {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>BoringNix Templates</h1>
-<form action="/" method="post">
-    <input type="text" name="template" placeholder="Enter template name">
-    <button type="submit">Get Template</button>
-</form>
+<div class="container">
+    <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" class="nixos-logo" viewBox="0 0 128 128"><path fill="#000000" d="M50.732 43.771L20.525 96.428l-7.052-12.033 8.14-14.103-16.167-.042L2 64.237l3.519-6.15 23.013.073 8.27-14.352 13.93-.037zm2.318 42.094l60.409.003-6.827 12.164-16.205-.045 8.047 14.115-3.45 6.01-7.05.008-11.445-20.097-16.483-.034-6.996-12.124zm35.16-23.074l-30.202-52.66L71.888 10l8.063 14.148 8.12-14.072 6.897.002 3.532 6.143-11.57 20.024 8.213 14.386-6.933 12.16z" clip-rule="evenodd" fill-rule="evenodd"/><path fill="#000000" d="M39.831 65.463l30.202 52.66-13.88.131-8.063-14.148-8.12 14.072-6.897-.002-3.532-6.143 11.57-20.024-8.213-14.386 6.933-12.16zm35.08-23.207l-60.409-.003L21.33 30.09l16.204.045-8.047-14.115 3.45-6.01 7.051-.01 11.444 20.097 16.484.034 6.996 12.124zm2.357 42.216l30.207-52.658 7.052 12.034-8.141 14.102 16.168.043L126 64.006l-3.519 6.15-23.013-.073-8.27 14.352-13.93.037z" clip-rule="evenodd" fill-rule="evenodd"/></svg>
+    </div>
+    <h1>Boring NixOS Modules</h1>
+    <p class="description">
+        Simple and efficient NixOS configuration module templates
+    </p>
+
+    <form action="/" method="post">
+        <input type="text"
+               name="module"
+               placeholder="Enter service name (e.g., nextcloud, nginx, postgresql)"
+               required>
+        <button type="submit">Get Module</button>
+    </form>
+
+    <div id="content" class="content" style="display: none;">
+        <pre id="module-content"></pre>
+    </div>
+
+    <a href="https://github.com/bratorange/boringnix"
+       class="github-link"
+       target="_blank"
+       rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20pt" height="20pt" viewBox="0 0 92 92"><defs><clipPath id="a">
+            <path d="M0 .113h91.887V92H0Zm0 0"/></clipPath></defs><g clip-path="url(#a)"><path style="stroke:none;fill-rule:nonzero;fill:#100f0d;fill-opacity:1" d="M90.156 41.965 50.036 1.848a5.913 5.913 0 0 0-8.368 0l-8.332 8.332 10.566 10.566a7.03 7.03 0 0 1 7.23 1.684 7.043 7.043 0 0 1 1.673 7.277l10.183 10.184a7.026 7.026 0 0 1 7.278 1.672 7.04 7.04 0 0 1 0 9.957 7.045 7.045 0 0 1-9.961 0 7.038 7.038 0 0 1-1.532-7.66l-9.5-9.497V59.36a7.04 7.04 0 0 1 1.86 11.29 7.04 7.04 0 0 1-9.957 0 7.04 7.04 0 0 1 0-9.958 7.034 7.034 0 0 1 2.308-1.539V33.926a7.001 7.001 0 0 1-2.308-1.535 7.049 7.049 0 0 1-1.516-7.7L29.242 14.273 1.734 41.777a5.918 5.918 0 0 0 0 8.371L41.855 90.27a5.92 5.92 0 0 0 8.368 0l39.933-39.934a5.925 5.925 0 0 0 0-8.371"/></g>
+        </svg>
+        View module list
+    </a>
+</div>
+
+<script>
+    // Parse URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const content = urlParams.get('content');
+
+    if (content) {
+        const contentDiv = document.getElementById('content');
+        const moduleContent = document.getElementById('module-content');
+        contentDiv.style.display = 'block';
+        moduleContent.textContent = decodeURIComponent(content);
+    }
+</script>
 </body>
 </html>
