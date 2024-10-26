@@ -5,32 +5,26 @@ use axum::{
 };
 use std::fs;
 use std::path::PathBuf;
+use std::process::exit;
 use serde::Deserialize;
 use tower_http::trace::TraceLayer;
 use tracing::{info, warn, error, Level};
 
 #[derive(Deserialize)]
-struct TemplateForm {
-    template: String,
+struct ModuleForm {
+    module: String,
 }
 
 // Function to check and create the modules directory
 fn ensure_modules_directory() -> std::io::Result<()> {
     let modules_path = PathBuf::from("modules");
+    let modules_path_string = modules_path.display();
     if !modules_path.exists() {
-        info!("Creating modules directory");
-        fs::create_dir(&modules_path)?;
-        // Create a default test.nix file if it doesn't exist
-        let test_path = modules_path.join("test.nix");
-        if !test_path.exists() {
-            info!("Creating default test.nix template");
-            fs::write(
-                test_path,
-                "{ config, pkgs, ... }:\n{\n  # Default template\n  services.nextcloud = {\n    enable = true;\n    package = pkgs.nextcloud27;\n    hostName = \"nextcloud.example.com\";\n    # Add more configuration options here\n  };\n}\n"
-            )?;
-        }
+        info!("Directory {modules_path_string} does not exist. Exiting...");
+        info!("Current directory: {current_dir}", current_dir = std::env::current_dir().unwrap().display());
+        exit(1)
     } else {
-        info!("Modules directory exists");
+        info!("Found modules directory at {modules_path_string}");
     }
     Ok(())
 }
@@ -46,41 +40,44 @@ async fn index() -> axum::response::Html<String> {
     )
 }
 
-async fn serve_template(Path(template): Path<String>) -> axum::response::Response {
-    info!("Serving template: {}", template);
-    let path = PathBuf::from(format!("modules/{}.nix", template));
+async fn serve_module(Path(module): Path<String>) -> axum::response::Response {
+    info!("Serving module: {}", module);
+    let path = PathBuf::from(format!("modules/{}.nix", module));
 
     if path.exists() {
         match fs::read_to_string(&path) {
             Ok(content) => {
-                info!("Successfully served template: {}", template);
+                info!("Successfully served module: {}", module);
                 axum::response::Response::builder()
                     .header("Content-Type", "text/plain")
                     .body(content.into())
                     .unwrap()
             }
             Err(e) => {
-                error!("Failed to read template {}: {}", template, e);
+                error!("Failed to read module {}: {}", module, e);
                 axum::response::Response::builder()
                     .status(500)
-                    .body("Error reading template".into())
+                    .body("Error reading module".into())
                     .unwrap()
             }
         }
     } else {
-        warn!("Template not found: {}", template);
+        warn!("Module not found: {}", module);
         axum::response::Response::builder()
             .status(404)
-            .body("{} not found".into())
+            .body(format!("<body>No module for <b>\
+            {module} </b> exists. You could add one at\
+             <a href=\"https://github.com/bratorange/boringnix\"> github.com/bratorange/boringnix </a>\
+            </body>").into())
             .unwrap()
     }
 }
 
-async fn forward_template(Form(form): Form<TemplateForm>) -> axum::response::Redirect {
-    // Sanitize template name
-    let template = form.template.replace("..", "").replace("/", "");
-    info!("Forwarding to template: {}", template);
-    axum::response::Redirect::to(&format!("/{}", template))
+async fn forward_module(Form(form): Form<ModuleForm>) -> axum::response::Redirect {
+    // Sanitize module name
+    let module = form.module.replace("..", "").replace("/", "");
+    info!("Forwarding to module: {}", module);
+    axum::response::Redirect::to(&format!("/{}", module))
 }
 #[tokio::main]
 async fn main() {
@@ -97,7 +94,7 @@ async fn main() {
             .add_directive("tower_http=debug".parse().unwrap()))
         .init();
 
-    info!("Starting BoringNix Template Server");
+    info!("Starting BoringNix Module Server");
 
     // Check and create modules directory
     if let Err(e) = ensure_modules_directory() {
@@ -107,8 +104,8 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(index))
-        .route("/", post(forward_template))
-        .route("/:template", get(serve_template))
+        .route("/", post(forward_module))
+        .route("/:module", get(serve_module))
         .layer(TraceLayer::new_for_http());
 
     let addr = "127.0.0.1:8005";
