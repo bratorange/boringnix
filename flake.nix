@@ -3,20 +3,22 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, rust-overlay }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [ rust-overlay.overlays.default ];
-      };
-    in
-    {
-      nixosConfigurations.boringnix = nixpkgs.lib.nixosSystem {
-        inherit system;
+outputs = { self, nixpkgs, flake-utils }:
+   flake-utils.lib.eachDefaultSystem (system:
+   let
+         pkgs = nixpkgs.legacyPackages.${system};
+   in
+   {
+     packages.default = pkgs.rustPlatform.buildRustPackage {
+       pname = "boringnix";
+       version = "0.1.0";
+       src = ./.;
+       cargoHash = "sha256-EXTG3eZMH4HpiGRNWCDhzY7kIjzitkcVF3OdkBf/dFY=";
+     };
+
+     nixosConfigurations.boringnix = nixpkgs.lib.nixosSystem {
         modules = [
           ({ config, pkgs, ... }: {
             boot.isContainer = true;
@@ -28,7 +30,7 @@
                 enableACME = true;
                 forceSSL = true;
                 locations."/" = {
-                  proxyPass = "http://127.0.0.1:3000";
+                  proxyPass = "http://127.0.0.1:8005";
                 };
               };
             };
@@ -39,12 +41,6 @@
             };
 
             networking.firewall.allowedTCPPorts = [ 80 443 ];
-
-            environment.systemPackages = with pkgs; [
-              (rust-bin.stable.latest.default.override {
-                targets = [ "x86_64-unknown-linux-musl" ];
-              })
-            ];
 
             systemd.services.boringnix-server = {
               description = "BoringNix Template Server";
@@ -66,5 +62,5 @@
           })
         ];
       };
-    };
+    });
 }
