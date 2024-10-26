@@ -14,6 +14,27 @@ struct TemplateForm {
     template: String,
 }
 
+// Function to check and create the modules directory
+fn ensure_modules_directory() -> std::io::Result<()> {
+    let modules_path = PathBuf::from("modules");
+    if !modules_path.exists() {
+        info!("Creating modules directory");
+        fs::create_dir(&modules_path)?;
+        // Create a default test.nix file if it doesn't exist
+        let test_path = modules_path.join("test.nix");
+        if !test_path.exists() {
+            info!("Creating default test.nix template");
+            fs::write(
+                test_path,
+                "{ config, pkgs, ... }:\n{\n  # Default template\n  services.nextcloud = {\n    enable = true;\n    package = pkgs.nextcloud27;\n    hostName = \"nextcloud.example.com\";\n    # Add more configuration options here\n  };\n}\n"
+            )?;
+        }
+    } else {
+        info!("Modules directory exists");
+    }
+    Ok(())
+}
+
 async fn index() -> axum::response::Html<String> {
     info!("Serving index page");
     axum::response::Html(
@@ -50,16 +71,17 @@ async fn serve_template(Path(template): Path<String>) -> axum::response::Respons
         warn!("Template not found: {}", template);
         axum::response::Response::builder()
             .status(404)
-            .body("Template not found".into())
+            .body("{} not found".into())
             .unwrap()
     }
 }
 
 async fn forward_template(Form(form): Form<TemplateForm>) -> axum::response::Redirect {
-    info!("Forwarding to template: {}", form.template);
-    axum::response::Redirect::to(&format!("/{}.nix", form.template))
+    // Sanitize template name
+    let template = form.template.replace("..", "").replace("/", "");
+    info!("Forwarding to template: {}", template);
+    axum::response::Redirect::to(&format!("/{}", template))
 }
-
 #[tokio::main]
 async fn main() {
     // Initialize tracing
@@ -77,10 +99,16 @@ async fn main() {
 
     info!("Starting BoringNix Template Server");
 
+    // Check and create modules directory
+    if let Err(e) = ensure_modules_directory() {
+        error!("Failed to create modules directory: {}", e);
+        std::process::exit(1);
+    }
+
     let app = Router::new()
         .route("/", get(index))
         .route("/", post(forward_template))
-        .route("/:template.nix", get(serve_template))
+        .route("/:template", get(serve_template))
         .layer(TraceLayer::new_for_http());
 
     let addr = "127.0.0.1:8005";
