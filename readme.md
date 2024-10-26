@@ -4,7 +4,7 @@ _Sane NixOS configuration defaults for different services._
 This is a collection of modules a NixOS user / system administrator might want to use. They should be almost working out of the box, but still be configurable to the user's needs. Go to [boringnix.store](https://boringnix.store) to download any module.
 
 ## Contributing
-Please provide a module for a service, that you use and that is not yet covered by this repository! I want to cover as many services as possible, so that users can easily use them without too much hassle. If you are unsure, whether a module is needed, feel free to open an issue or a pull request.
+You can provide a module for any service, that you use and that is not yet covered by this repository! I want to cover as many services as possible, so that users can easily use them without too much hassle. If you are unsure, whether a module is needed, feel free to open an issue or a pull request.
 
 _Many of the aspects mentioned below are not final and will probably change, as the project evolves._
 ## Definitions
