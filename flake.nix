@@ -10,7 +10,7 @@ outputs = { self, nixpkgs, flake-utils }:
    let
          pkgs = nixpkgs.legacyPackages.${system};
    in
-   {
+   rec {
      packages.default = pkgs.rustPlatform.buildRustPackage {
        pname = "boringnix";
        version = "0.1.0";
@@ -18,7 +18,7 @@ outputs = { self, nixpkgs, flake-utils }:
        cargoHash = "sha256-EXTG3eZMH4HpiGRNWCDhzY7kIjzitkcVF3OdkBf/dFY=";
      };
 
-     nixosConfigurations.boringnix = nixpkgs.lib.nixosSystem {
+     nixosConfigurations.boringnix = pkgs.lib.nixosSystem {
         modules = [
           ({ config, pkgs, ... }: {
             boot.isContainer = true;
@@ -47,8 +47,8 @@ outputs = { self, nixpkgs, flake-utils }:
               after = [ "network.target" ];
               wantedBy = [ "multi-user.target" ];
               serviceConfig = {
-                ExecStart = "${pkgs.rust-bin.stable.latest.default}/bin/cargo run --release";
-                WorkingDirectory = "/var/lib/boringnix";
+                ExecStart = "${packages.default}/bin/boringnix";
+                WorkingDirectory = packages.default;
                 User = "boringnix";
                 Restart = "on-failure";
               };
