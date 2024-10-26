@@ -29,6 +29,8 @@
 
         .container {
             max-width: 800px;
+            display: flex;
+            flex-direction: column;
             margin: 0 auto;
             padding: 2rem;
             background-color: white;
@@ -54,6 +56,7 @@
             margin-bottom: 2rem;
             color: #636e72;
         }
+
 
         form {
             display: flex;
@@ -97,11 +100,6 @@
             margin-top: 2rem;
         }
 
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
-        }
 
         .github-link {
             display: flex;
@@ -116,6 +114,33 @@
 
         .github-link:hover {
             color: var(--primary-color);
+        }
+        code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+        }
+
+        .instructions {
+            background-color: #f6f8fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 2rem 0;
+            color: #636e72;
+            max-width: fit-content;
+            align-self: center;
+        }
+
+        .instructions pre {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .instructions code {
+            white-space: pre-wrap;
         }
 
         @media (max-width: 600px) {
@@ -134,6 +159,43 @@
             button {
                 width: 100%;
             }
+        }
+
+        pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            border-radius: 6px;
+            font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+            background: #f0f0f0;
+            width: auto;
+            text-align: left;
+        }
+        .comment {
+            color: #357577;
+            font-style: italic;
+        }
+
+        .filepath {
+            color: #b26828;
+        }
+
+        .brace {
+            color: #215588;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 1em;
+        }
+
+        pre code {
+            background: none;
+            border-radius: 0;
+            display: block;
         }
     </style>
 </head>
@@ -158,8 +220,25 @@
     <div id="content" class="content" style="display: none;">
         <pre id="module-content"></pre>
     </div>
+    <div class="instructions">
+        <strong>How to use:</strong><br>
+        1. <code>cd</code> into your NixOS configuration directory<br>
+        2. (optional) Create a modules folder: <code>mkdir modules; cd modules</code><br>
+        3. Fetch a module file: <code>wget boringnix.store/nextcloud</code><br>
+        4. Add it to your NixOS configuration flake:<br>
+        <pre><code>nixosConfigurations.hostname = nixpkgs.lib.nixosSystem <span class="brace">{</span>
+    modules = <span class="brace">[</span>
+        <span class="comment"># Paste module here:</span>
+        <span class="filepath">./nextcloud.nix</span>
+        <span class="comment"># or</span>
+        <span class="filepath">./modules/nextcloud.nix</span>
+        ...
+    <span class="brace">]</span>;
+    ...
+<span class="brace">}</span></code></pre>
+    </div>
 
-    <a href="https://github.com/bratorange/boringnix"
+    <a href="https://github.com/bratorange/boringnix/tree/main/modules"
        class="github-link"
        target="_blank"
        rel="noopener noreferrer">
