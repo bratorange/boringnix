@@ -1,6 +1,6 @@
-# Read first
+# READ THIS
 # In order to use headscale you will have to register each machine you want to connect to the VPN with the headscale server.
-# 1. Create user for each client you want to connect to the VPN: headscalectl user create <clientname>
+# 1. Create a user for each client you want to connect to the VPN: headscalectl user create <clientname>
 # 2. Install the tailscale client on your client: https://tailscale.com/download/linux
 # 3. connect to headscale server from your client: sudo tailscale login --login-server=https://tailscale.yourdomain.com
 # 4. follow the link to authenticate your client on the headscale server
