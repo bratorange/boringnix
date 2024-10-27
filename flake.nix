@@ -16,12 +16,23 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
       in
-      {
-        packages.default = pkgs.rustPlatform.buildRustPackage {
+      rec {
+        packages.default = pkgs.stdenv.mkDerivation {
           pname = "boringnix";
+          src = ./.;
+          version = packages.binary.version;
+          phases = [ "installPhase" ];
+          installPhase = ''
+            mkdir -p $out/bin
+            ln -s ${packages.binary}/bin/boringnix $out/bin
+            cp -r $src/modules $out
+          '';
+        };
+        packages.binary = pkgs.rustPlatform.buildRustPackage {
+          pname = "boringnix-binary";
           version = "0.1.0";
           src = ./.;
-          cargoHash = "sha256-EXTG3eZMH4HpiGRNWCDhzY7kIjzitkcVF3OdkBf/dFY=";
+          cargoHash = "sha256-jWDym9/u/2gS57TkkLlo3JErUQIQgWOmtJF3JMEfUcQ=";
         };
       }
     )
