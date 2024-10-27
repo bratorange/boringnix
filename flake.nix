@@ -25,9 +25,13 @@
         };
       }
     )
-    // {
+    //
+     {
       nixosModules.server =
         { config, pkgs, ... }:
+        let
+            defaultPackage = self.packages."${pkgs.system}".default;
+        in
         {
           boot.isContainer = true;
 
@@ -53,8 +57,8 @@
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             serviceConfig = {
-              ExecStart = "${self.packages.default}/bin/boringnix";
-              WorkingDirectory = self.packages.default;
+              ExecStart = "${defaultPackage}/bin/boringnix";
+              WorkingDirectory = defaultPackage;
               User = "boringnix";
               Restart = "on-failure";
             };
