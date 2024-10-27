@@ -18,7 +18,7 @@ outputs = { self, nixpkgs, flake-utils }:
        cargoHash = "sha256-EXTG3eZMH4HpiGRNWCDhzY7kIjzitkcVF3OdkBf/dFY=";
      };
 
-     nixosConfigurations.server = pkgs.lib.nixosSystem {
+     nixosModules.server = pkgs.lib.nixosSystem {
         modules = [
           ({ config, pkgs, ... }: {
             boot.isContainer = true;
