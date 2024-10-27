@@ -1,4 +1,5 @@
-# READ THIS
+# READ THIS FIRST
+# This module will install a headscale server using nginx as a reverse proxy for ssl termination
 # In order to use headscale you will have to register each machine you want to connect to the VPN with the headscale server.
 # 1. Create a user for each client you want to connect to the VPN: headscalectl user create <clientname>
 # 2. Install the tailscale client on your client: https://tailscale.com/download/linux
