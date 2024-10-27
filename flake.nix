@@ -33,8 +33,6 @@
             defaultPackage = self.packages."${pkgs.system}".default;
         in
         {
-          boot.isContainer = true;
-
           services.nginx = {
             enable = true;
             recommendedProxySettings = true;
@@ -53,7 +51,7 @@
           ];
 
           systemd.services.boringnix-server = {
-            description = "BoringNix Template Server";
+            description = "BoringNix Module Server";
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             serviceConfig = {
