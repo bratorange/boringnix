@@ -71,7 +71,12 @@
 #
 # 9. Adapt this configuration to your needs
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   domain = "yourdomain.com"; # REQUIRED: Set your domain name
 in
@@ -93,19 +98,26 @@ in
     };
     settings.overwriteprotocol = "https";
     settings.trusted_domains = [ domain ];
-    phpOptions = { "opcache.interned_strings_buffer" = "64"; };
+    phpOptions = {
+      "opcache.interned_strings_buffer" = "64";
+    };
   };
 
   services.postgresql = {
     enable = true;
 
-    ensureUsers = [{
-      name = "nextcloud";
-      ensureDBOwnership = true;
-    }];
+    ensureUsers = [
+      {
+        name = "nextcloud";
+        ensureDBOwnership = true;
+      }
+    ];
 
     ensureDatabases = [ "nextcloud" ];
   };
+
+  security.acme.defaults.email = "your-email@letsencrypt-will-contact-you.at"; # REQUIRED: Set your email address
+  security.acme.acceptTerms = false; # REQUIRED: Read the terms of service and set this to true. https://letsencrypt.org/repository/.
 
   services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
     forceSSL = true;

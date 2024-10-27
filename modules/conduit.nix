@@ -1,5 +1,5 @@
 # READ THIS FIRST
-# This module will install a matrix server using the conduit server
+# This module will install a matrix server using conduit
 # Ngnix is used as a reverse proxy for ssl termination
 # two domains are used: matrix.yourdomain and yourdomain.com
 # matrix.yourdomain is used to serve the matrix server
@@ -22,8 +22,8 @@ in
     };
   };
 
-    security.acme.defaults.email = "your-email@letsencrypt-will-contact-you.at"; # REQUIRED: Set your email address
-    security.acme.acceptTerms = false; # REQUIRED: Read the terms of service and set this to true. https://letsencrypt.org/repository/.
+  security.acme.defaults.email = "your-email@letsencrypt-will-contact-you.at"; # REQUIRED: Set your email address
+  security.acme.acceptTerms = false; # REQUIRED: Read the terms of service and set this to true. https://letsencrypt.org/repository/.
 
   # Nginx reverse proxy configuration
   services.nginx.virtualHosts = {
