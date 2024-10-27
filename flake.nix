@@ -43,11 +43,6 @@
             };
           };
 
-          security.acme = {
-            acceptTerms = true;
-            defaults.email = "acme@jsch.in";
-          };
-
           networking.firewall.allowedTCPPorts = [
             80
             443
