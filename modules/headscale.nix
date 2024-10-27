@@ -5,6 +5,8 @@
 # 2. Install the tailscale client on your client: https://tailscale.com/download/linux
 # 3. connect to headscale server from your client: sudo tailscale login --login-server=https://tailscale.yourdomain.com
 # 4. follow the link to authenticate your client on the headscale server
+# 5. Adapt this configuration to your needs
+
 { pkgs, ... }:
 let
   domain = "yourdomain.com"; # REQUIRED: Set your domain name
@@ -18,6 +20,7 @@ in
     port = 8003;
     settings = {
       server_url = "https://${fullDomain}";
+
       # REQUIRED: This is the Acces control list between the clients in your vpn
       # this example assumes three clients: yourmachine, someothermachine and someserver
       # these are name of the machines you registered with headscale before
@@ -69,6 +72,8 @@ in
       };
     };
   };
+  security.acme.defaults.email = "your-email@letsencrypt-will-contact-you.at"; # REQUIRED: Set your email address
+  security.acme.acceptTerms = false; # REQUIRED: Read the terms of service and set this to true. https://letsencrypt.org/repository/.
   services = {
     nginx = {
       enable = true;

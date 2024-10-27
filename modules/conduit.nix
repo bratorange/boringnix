@@ -22,6 +22,9 @@ in
     };
   };
 
+    security.acme.defaults.email = "your-email@letsencrypt-will-contact-you.at"; # REQUIRED: Set your email address
+    security.acme.acceptTerms = false; # REQUIRED: Read the terms of service and set this to true. https://letsencrypt.org/repository/.
+
   # Nginx reverse proxy configuration
   services.nginx.virtualHosts = {
     "matrix.${domain}" = {
