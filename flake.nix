@@ -26,6 +26,7 @@
             mkdir -p $out/bin
             ln -s ${packages.binary}/bin/boringnix $out/bin
             cp -r $src/modules $out
+            cp -r $src/static $out
           '';
         };
         packages.binary = pkgs.rustPlatform.buildRustPackage {
