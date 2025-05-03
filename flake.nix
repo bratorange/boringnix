@@ -33,52 +33,8 @@
           pname = "boringnix-binary";
           version = "0.1.0";
           src = ./.;
-          cargoHash = "sha256-jWDym9/u/2gS57TkkLlo3JErUQIQgWOmtJF3JMEfUcQ=";
+          cargoHash = "sha256-vclHM9JYLaUvz+yG2KkR8rGqr9NMJuypIV9AlD7Cy+A=";
         };
       }
-    )
-    //
-     {
-      nixosModules.server =
-        { config, pkgs, ... }:
-        let
-            defaultPackage = self.packages."${pkgs.system}".default;
-        in
-        {
-          services.nginx = {
-            enable = true;
-            recommendedProxySettings = true;
-            virtualHosts."boringnix.store" = {
-              enableACME = true;
-              forceSSL = true;
-              locations."/" = {
-                proxyPass = "http://127.0.0.1:8005";
-              };
-            };
-          };
-
-          networking.firewall.allowedTCPPorts = [
-            80
-            443
-          ];
-
-          systemd.services.boringnix-server = {
-            description = "BoringNix Module Server";
-            after = [ "network.target" ];
-            wantedBy = [ "multi-user.target" ];
-            serviceConfig = {
-              ExecStart = "${defaultPackage}/bin/boringnix";
-              WorkingDirectory = defaultPackage;
-              User = "boringnix";
-              Restart = "on-failure";
-            };
-          };
-
-          users.users.boringnix = {
-            isSystemUser = true;
-            group = "boringnix";
-          };
-          users.groups.boringnix = { };
-        };
-    };
+    );
 }
